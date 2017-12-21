@@ -1,7 +1,7 @@
 version: '2'
 
 services:
-    lar_circleci:
+    app:
         build: 
             context: ./build
         image: khanhnv/lar_circleci:latest
