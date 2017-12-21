@@ -76,11 +76,11 @@ RUN curl -L https://squizlabs.github.io/PHP_CodeSniffer/phpcbf.phar -o phpcbf &&
 	chmod a+x phpcbf && \
 	mv phpcbf /usr/local/bin/phpcbf
 
-RUN update-alternatives --set php /usr/bin/php5.6
+RUN update-alternatives --set php /usr/bin/php7.0
 
-ADD ./php/www.conf /etc/php/5.6/fpm/pool.d/www.conf
-ADD ./php/php.ini /etc/php/5.6/fpm/php.ini
-ADD ./php/php-fpm.conf /etc/php/5.6/fpm/php-fpm.conf
+ADD ./php/www.conf /etc/php/7.0/fpm/pool.d/www.conf
+ADD ./php/php.ini /etc/php/7.0/fpm/php.ini
+ADD ./php/php-fpm.conf /etc/php/7.0/fpm/php-fpm.conf
 
 # Install Supervisor
 RUN apt-get -y install supervisor && \
