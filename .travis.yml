@@ -5,8 +5,8 @@ services:
 os:
 - linux
 before_script:
-- composer create-project --prefer-dist laravel/laravel source/laravel
-- chmod -R 777 source/laravel/public source/laravel/storage source/laravel/bootstrap/cache
+- composer create-project --prefer-dist laravel/laravel html/lar
+- chmod -R 777 html/lar/public html/lar/storage html/lar/bootstrap/cache
 - docker --version
 - docker-compose --version
 script:

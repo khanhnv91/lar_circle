@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+    lar_circleci:
+        build: 
+            context: ./build
+        image: khanhnv/lar_circleci:latest
+        ports:
+            - "80:80"
+        volumes:
+            - ./html:/var/www/html
+            - ./build/nginx/conf.d:/etc/nginx/conf.d
+            - ./build/nginx/logs:/var/log/nginx
+            - ./build/supervisor/conf.d:/etc/supervisor/conf.d
+            - ./build/supervisor/lar:/var/log/lar
