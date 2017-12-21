@@ -1,0 +1,94 @@
+FROM ubuntu:16.04
+
+MAINTAINER Khanh Nguyen <khanhnv.uit@gmail.com>
+
+ENV LC_ALL=C.UTF-8
+
+RUN apt-get update && \
+	apt-get -y install wget \
+	curl \
+	git \
+	software-properties-common \
+	python-software-properties \
+	debian-archive-keyring \
+	mcrypt
+
+RUN add-apt-repository ppa:ondrej/php
+RUN apt-get update && apt-get -y install \
+	vim \
+	python \
+    python-dev \
+    ca-certificates \
+    dialog \
+    gcc \
+    musl-dev \
+    libffi-dev \
+    supervisor \
+    python-pip \
+    zip \
+    unzip \
+    iputils-ping \
+    build-essential nghttp2 libnghttp2-dev libssl-dev openssl
+
+# Build Curl with enable nghttp2
+RUN wget https://curl.haxx.se/download/curl-7.55.1.tar.bz2 && \
+	tar -xvjf curl-7.55.1.tar.bz2 && \
+	cd curl-7.55.1 && \
+	./configure --with-nghttp2 --prefix=/usr/local --with-ssl && \
+	make && make install && ldconfig && \
+	cd ../ && rm -rf curl-7.55.1.tar.bz2 curl-7.55.1
+
+# Install Mysql
+RUN apt-get install -y mariadb-server
+
+RUN	echo "mysqld_safe &" > /tmp/config && \
+	echo "mysqladmin --silent --wait=30 ping || exit 1" >> /tmp/config && \
+	echo "mysql -e 'GRANT ALL PRIVILEGES ON *.* TO \"root\"@\"%\" WITH GRANT OPTION;'" >> /tmp/config && \
+	bash /tmp/config && \
+	rm -f /tmp/config
+
+ADD ./mariadb/conf/my.cnf /etc/mysql/my.cnf
+
+# Install Nginx
+RUN apt-get install nginx -y
+
+# Install PHP7.0
+RUN	apt-get update && apt-get -y install php7.0 php7.0-cgi php7.0-cli php7.0-common php7.0-curl php7.0-dev php7.0-gd php7.0-gmp php7.0-json php7.0-ldap php7.0-mysql \
+	php7.0-odbc php7.0-opcache php7.0-pgsql php7.0-pspell php7.0-readline php7.0-recode php7.0-sqlite3 php7.0-tidy php7.0-xml php7.0-xmlrpc \
+	libphp7.0-embed php7.0-bcmath php7.0-bz2 php7.0-enchant php7.0-fpm php7.0-imap php7.0-interbase php7.0-intl php7.0-mbstring php7.0-mcrypt \
+	php7.0-phpdbg php7.0-soap php7.0-sybase php7.0-xsl php7.0-zip php7.0-dba php-redis
+
+# Install Composer 
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ && mv /usr/bin/composer.phar /usr/bin/composer
+
+# Install Php-cs-fixer
+RUN curl -L http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar -o php-cs-fixer && \
+	chmod a+x php-cs-fixer && \
+	mv php-cs-fixer /usr/local/bin/php-cs-fixer
+
+# Install Phpcs
+RUN curl -L https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar -o phpcs && \
+	chmod a+x phpcs && \
+	mv phpcs /usr/local/bin/phpcs
+
+# Install Phpcbf
+RUN curl -L https://squizlabs.github.io/PHP_CodeSniffer/phpcbf.phar -o phpcbf && \
+	chmod a+x phpcbf && \
+	mv phpcbf /usr/local/bin/phpcbf
+
+RUN update-alternatives --set php /usr/bin/php5.6
+
+ADD ./php/www.conf /etc/php/5.6/fpm/pool.d/www.conf
+ADD ./php/php.ini /etc/php/5.6/fpm/php.ini
+ADD ./php/php-fpm.conf /etc/php/5.6/fpm/php-fpm.conf
+
+# Install Supervisor
+RUN apt-get -y install supervisor && \
+	mkdir -p /var/log/lar
+
+ADD ./supervisor/supervisord.conf /etc/supervisor/supervisord.conf
+
+# Remove Cache Advanced package tool of Ubuntu
+RUN	apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* 
+
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
