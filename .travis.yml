@@ -3,30 +3,27 @@ dist: trusty
 group: deprecated-2017Q4
 language: php
 php:
-  - 7.0
+- 7.0
 services:
-  - docker
+- docker
 os:
-  - linux
+- linux
 before_script:
-  - composer create-project --prefer-dist laravel/laravel html/lar
-  - chmod -R 777 html/lar/public html/lar/storage html/lar/bootstrap/cache
-  - docker --version
-  - docker-compose --version
+- composer create-project --prefer-dist laravel/laravel html/lar
+- chmod -R 777 html/lar/public html/lar/storage html/lar/bootstrap/cache
+- docker --version
+- docker-compose --version
 script:
-  - docker-compose build
-  - docker images
-  - docker-compose up -d
-  - sleep 20
-  - docker ps
-  - curl --retry 10 --retry-delay 5 -v http://localhost
+- docker-compose build
+- docker images
+- docker-compose up -d
+- sleep 20
+- docker ps
+- curl --retry 10 --retry-delay 5 -v http://localhost
 after_success:
-  - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-  - docker push vietdien2005/laravel_circleci
+- docker login -u $DOCKER_USER -p $DOCKER_PWD
+- docker push khanhnv/lar_circleci
 env:
   global:
-  - secure: lSQzHAls4cguNc/B+epnSGLX8Sr6i5S/nKhIE4eDykJJYUj/YqyO4RrSHLt3T1hGcYcv/9VMwnJbLe+pYRfl6gob9qfSdHh5XZOyq3HlX0OklzUHTGzW4yaQ0ILBADquynGKiHEnpWTUGNtBMNeUXo1cvfqfTM2xEPK21azpsm+ClBiG4ip0Qa9CSI1Qg6twtApjWdkoVtgn6AIOr8qwpL6SZs5o5EBN8X8dXGCBKBbqsElkaUI+nwq0863rD1kjLXHu3S+c0m/G8vcD8clp41p6tKsTeEz64vxQ8dcvmzbhuPKkLv9AvHwfvallUVEal7Wbx03uZLTfnWeLRHCZpEhNE8ndfyxYLkSSod8dxnqwICdXy7MeHJxsw7GTUq5UT4OIe1gpqwdmJo+PMXXhVX4KRjZ1+Tt3fFK0edVwBe6ld7yEMhIx5CKPQ74FsXsoYcPCGTAXgftQeb4km1O3+kXNUQXrW5ra6DmgrUsgT8WVd+NeKVd2E/tQ1Wr2bnnnFK4+dfq1ZK05/e48GWRCkoPHQ6cA5uEbjv0e6anM9kGqAU9mWyRsNx8UTraqe8mVjwjDSe/41/Pp2navKAWkEpu2eadGXRCdLWspIsKwY/F2EkMCbeuEwFWZfuLVkwWzKtNW1Hin8CdHt+dVUFSfEEZSfwsBi+R6+Y2Wp/grK9g=
-notifications:
-  slack:
-    rooms:
-      secure: ScfpB3yV0y+HGpERfA3yO6GRJRVfgnwIjiDKpVU5ovcahK80l6oLGl06zSseLHlhxc/QAEKQbWg/76PzSdXT4D7IIcwgoEV4AtQpPj7QrWtI+95IhV7oIw9SYdbKCUK91vouL/qcjHNco55JaPOcRXPO+0o1bd17mSBuh971hA0nv2EeHkA6CP6hGU0cbG8a0OjSmsZ7e1I1mFfAunun19eMHH2MsskkYmxz2/ABU0QsZ3RWkonPl2uL+uCaTlF6Rual7TIE/zVBfkdj09OinVPZYZCOcuqAb7zveu/Ax3WrZb5ZMEP4R2pQpRS8Kbe6EDwHRSXwk6st6Y/8VMMF5MogYARujI6o2UKRdwkdjpiyj/QK4DedIzGedcPmrzO0vUuDTrt7LedmYOqC/BOc75LFPKNf5pgy5xueLx7OHX0hGuDZXXb68pixkQmf4V4VbCRbaRKSDdNVoSp0dPHnHfJP51jDRQ9HPSL2LgXDsap7nTnxXYu66Y/cWd0iflhE7J7redV37Bo/PyWxKgkSmzMQWCCnc/ueI0f+oD9i0F3HzFUrnkaJwqhZWInjhg+xhz26bf/4yWwT++a9iKBX8doP+SHjCVtKiD+fzElypCFtry9GgaqNvJ3SP05tPJtPAmEx+naBAND9bpRN4zs5MsVgSXg5w44k43H72yT0CLA=
+  - secure: M44NVp3+BfClPJp5jDvNXb7havgzEMuJx0nBNh2GxT4CUOax4KnwRNwUcFYJR2i+12utXbs4gpC/sGSVhhos3GIW/dRrnEw0wJUwtRwXRq8ZBq2bX8AlemjLiTuFYnCpg7PjldX7dqg3i8s7wkTHcUDwCRzoN0NgK+Q5hXWpSD3ho47BfWX1F8AmmGXSH64Lk1JGn47hUDElMtgX/gx+iwzYeVRS2kA35fSkiNB/ddhBUpVmp/DA18VpktxIcghl4ACK9z0frYZgqf/uqPFfRI/H0O9GkRZOK7gzjxSoPP329NTDzVBPICREjv2/oKIf/LETXuO0pzKeR6XDTL2ylZ7VzNt0qvzrOWn8WZKpvUlmqoDZaIwQZRk8F/421eujqCFN7diuZ2sJqmrgX7aEDC+jb2R6JPDTe8fuqTkBim5ZoC3Z7h64CqXwwESEofQhqor25TzDpdO99xq2TrC3TzV2gxRg1oInFSUsKKBvBsRHCrLf1a+aHp15H13uI4jYrwHigeVxrsvBc3VMRJBfZkoTQs530sdwe06/XyeqSr0u3pbnsnQr9R4WPb5rh2/nUDMI8cBF7R3pKkIfalf//tgaHatQOduDApk6q5vIpg7+j3wwfGd5w4j/q9zTBbNLUql49tEuiprr3hrLNwKPSmeMJTubuEfHrpfzWpB6tOQ=
+  - secure: M/BN1bPvxayHFswC7js8PzX815221ZI7w3d8QT8YXAZR4FrXnuSw9KMXy5h0akRZEaK0iwIH7igf3kltdURpeVgtDx5cDKWNMLGTDTBpyyqh3SMgjzrIujwopYl1TfENJS/yKrpTp0ueH36BV6k4Xx5Q8XMs2itKSdfgYisLImPArxklKb/FYT6uOkZLZ4ROUqljz7k+9DkjaVES9HkpuaA6+U/DarkP+Y4nZaBV8bitJCoqQYZxn4s6YaWTIkHgFlD5ecVm13V4ks+znYpXzPkjuOYWKAq/Aym9WWrduI6UJSWlAbVQOZb928VzNZvSpMQdTuJ+D49fzfgxD/lKLlkkr60dJaTarckSgkhP0HJGCo4YcVrzA09ssyaIguohBawjQ1NKeiIdVbYrdAE3PjKlC9zTFJzU1iBb75aG2KvStYSQ5jNBTrAo29r8/5V2t2a6eyYcRQIsMUbWNsP900OM3fwJCMm5h9ml9XO34eBDxavVS64FHUH4+S9fsgDKN6xzXSDszFCjvx4hH7yuKyBTdTbXcMJ8nDC7Z7kifdKAuYMMESxIgOGHpXt37eyLt4LzNT5GY7xkNsVVXNi/8svHHyrqETjiPTXIyZ9bF0/DWoD1zeN+k26C/xxqJVdvAOUbyPFStZoAFSVET4WC4p/d5UOp2VhiMtcjmTUw4kY=
