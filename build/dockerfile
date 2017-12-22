@@ -39,7 +39,7 @@ RUN wget https://curl.haxx.se/download/curl-7.55.1.tar.bz2 && \
 	cd ../ && rm -rf curl-7.55.1.tar.bz2 curl-7.55.1
 
 # Install Mysql
-RUN apt-get install -y mariadb-server
+RUN apt-get update && apt-get -y install mariadb-server
 
 RUN	echo "mysqld_safe &" > /tmp/config && \
 	echo "mysqladmin --silent --wait=30 ping || exit 1" >> /tmp/config && \
